@@ -1,7 +1,7 @@
 # 📚 Sistema de Gerenciamento de Acervo e Empréstimos — BCZM
 
 ![C++](https://img.shields.io/badge/Linguagem-C++11-blue?style=flat-square\&logo=c%2B%2B)
-![IDE](https://img.shields.io/badge/IDE-Code::Blocks-orange?style=flat-square)
+![IDE](https://img.shields.io/badge/IDE-Visual%20Studio%20Code-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Concluído-brightgreen?style=flat-square)
 ![Licença](https://img.shields.io/badge/Licença-Uso%20Acadêmico-lightgrey?style=flat-square)
 
