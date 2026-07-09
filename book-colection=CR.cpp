@@ -22,22 +22,21 @@ struct Book
 };
 
 // Os Protótipos das funções
-void B_register(vector<Book> &Estante, int &cadastrados);
-void Acerv(const vector<Book> &Estante, const int cadastrados);
-void Loan(vector<Book> &Estante, const int cadadtrados);
-void SearchBook(const vector<Book> &Estante, int cadastrados);
+void B_register(vector<Book> &Estante);
+void Acerv(const vector<Book> &Estantes);
+void Loan(vector<Book> &Estante);
+void SearchBook(const vector<Book> &Estante);
 
 // Frotótipo das funções para mexer no arquivo .txt
 void SaveDatabase(const vector<Book> &Estante); // Função para Salvar dados no database
-void LoadDatabase(vector<Book> &Estante, int &cadastrados); // Função para carregar os dados
+void LoadDatabase(vector<Book> &Estante); // Função para carregar os dados
 
 int main()
 {
     int option;
-    int cadastrados = 0; // Defini uma variavel dos cadastrados, então as passei como parametro da função.
     vector<Book> Estante;
 
-    LoadDatabase(Estante, cadastrados);
+    LoadDatabase(Estante); // Carrega os dados do arquivo de texto para o vetor Estante
 
     cout << "Ola! Bem vindo ao sistema de cadastro e emprestino da BCZM!\n" << endl;
     do{
@@ -49,16 +48,16 @@ int main()
 
         switch(option){
     case 1:
-        B_register(Estante, cadastrados);
+        B_register(Estante);
         break;
     case 2:
-        Acerv(Estante, cadastrados);
+        Acerv(Estante);
         break;
     case 3:
-        Loan(Estante, cadastrados);
+        Loan(Estante);
         break;
     case 4:
-        SearchBook(Estante, cadastrados);
+        SearchBook(Estante);
         break;
     case 5:
         cout << "Lembre-se: Literatura salva um pais!\n-----Fechando o Programa-----" << endl;
@@ -75,8 +74,9 @@ return 0;
 
 
 // Função para registra
-void B_register(vector<Book> &Estante, int &cadastrados){
+void B_register(vector<Book> &Estante){
     int numbers;
+    const size_t MAX_CAPACITY = 100; // Evita dados trash
 
     cout << "\n[Registrador de Livros]\n";
     cout << "Escolha o numero de livros que deseja cadastar: ";
@@ -85,14 +85,14 @@ void B_register(vector<Book> &Estante, int &cadastrados){
 
     if (numbers <= 0){
         cout << "Valor invalido de livros.\n";
-    } else if(numbers + cadastrados > 100){
-        cout << "Nosso acervo ja possue " << cadastrados << " Livros cadastrados, nosso acervo comporta ate 100 livros.\n";
+    } else if(numbers + Estante.size() > MAX_CAPACITY){
+        cout << "Nosso acervo ja possue " << Estante.size() << " Livros cadastrados, nosso acervo comporta ate 100 livros.\n";
     } else {
         // O loop vai iterar apenas a quantidade de vezes que o usuário pediu agora
         for(int i = 0; i < numbers; i++){
             Book novoLivro; // variável temporária
 
-            cout << "\nLivro " << cadastrados + i + 1 << endl;
+            cout << "\nLivro " << Estante.size() + i + 1 << endl;
 
             cout << "Titulo da obra: ";
             getline(cin, novoLivro.Title); // Lemos os dados para o livro temporário
@@ -106,24 +106,20 @@ void B_register(vector<Book> &Estante, int &cadastrados){
 
             Estante.push_back(novoLivro);
         }
-        // OBS: essa fução estava com um problema que ele buscava dados da
-        cadastrados += numbers;
-
-        
     }
 
 }
 
 // Funcao para exibir o acervo
-void Acerv(const vector<Book> &Estante, int cadastrados){
+void Acerv(const vector<Book> &Estante){
     cout << "\n[Exibindo Acervo]\n";
 
-    if (cadastrados == 0){
+    if (Estante.empty()){
         cout << "Nao ha algum livro em nosso acervo nesse instante.\n";
         return;
     }
 
-    for(int j=0; j<cadastrados; j++){
+    for(int j=0; j<Estante.size(); j++){
         cout << " Livro n" << j+1 << endl;
         cout << "     TITULO: " << Estante[j].Title << endl;
         cout << "     AUTOR: " << Estante[j].Author << endl;
@@ -133,7 +129,7 @@ void Acerv(const vector<Book> &Estante, int cadastrados){
     }
 }
 // funcao para emprestimos
-void Loan(vector<Book> &Estante, const int cadastrados) {
+void Loan(vector<Book> &Estante) {
     int n; //livro
     char R; //resposta
 
@@ -141,7 +137,7 @@ void Loan(vector<Book> &Estante, const int cadastrados) {
     cout << "Qual livro deseja acessar? N: ";
     cin >> n;
 
-    if (n <= 0 || n > cadastrados) {
+    if (n <= 0 || n > Estante.size()) {
         cout << "Esse livro nao existe em nosso acervo.\n";
         return;
     }
@@ -182,13 +178,13 @@ void Loan(vector<Book> &Estante, const int cadastrados) {
     }
 }
 // Função para buscar livro
-void SearchBook(const vector<Book> &Estante, const int cadastrados){
+void SearchBook(const vector<Book> &Estante){
     string buscar_livro;
     bool Achoo = false;
 
     cout << "[Pesquisar Livros]" << endl;
 
-    if (cadastrados == 0) {
+    if (Estante.empty()) {
         cout << "Ainda nao existe nenhum livro em nosso acervo.\n";
         return;
     }
@@ -196,7 +192,7 @@ void SearchBook(const vector<Book> &Estante, const int cadastrados){
     cout << "Digite o Nome do livro que deseja buscar: ";
 getline(cin, buscar_livro);
 
-    for(int k = 0; k < cadastrados; k++){
+    for(int k = 0; k < Estante.size(); k++){
         if(buscar_livro == Estante[k].Title){
             cout << "\n--- Livro Encontrado ---" << endl;
             cout << "NUMERO DE ESTANTE: " << k+1 << endl;
@@ -229,7 +225,7 @@ void SaveDatabase(const vector<Book> &Estante) {
     Database.close();
 }
 
-void LoadDatabase(vector<Book> &Estante, int &cadastrados) { // ← & adicionado
+void LoadDatabase(vector<Book> &Estante) {
     std::ifstream Database("database-biblioteca.txt");
 
     if (!Database.is_open()) {
@@ -251,6 +247,5 @@ void LoadDatabase(vector<Book> &Estante, int &cadastrados) { // ← & adicionado
         getline(Database, linha); // ele ignora a linha que eu coloquei de separação
 
         Estante.push_back(livro);
-        cadastrados++;
     }
 }
